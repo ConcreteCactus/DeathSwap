@@ -41,6 +41,16 @@ public class DSgame {
             for(DSplayer dsp : players){
                 if(dsp.hasEqualUUID(p)){return false;}
             }
+            broadcastToPlayers(p.getDisplayName() + " has joined the lobby.");
+            String lobbyplayers = "Already in lobby: ";
+            for(DSplayer dsp : players){
+                dsp.setPlayer();
+                lobbyplayers += dsp.player.getDisplayName() + ", ";
+            }
+            if(players.size() > 0){
+                p.sendRawMessage(lobbyplayers);
+            }
+
             players.add(new DSplayer(p.getUniqueId()));
             players.get(players.size()-1).setPlugin(jplugin);
             return true;
@@ -62,7 +72,7 @@ public class DSgame {
     }
 
     public boolean startGame(Player p){
-        if(players.size() < 1 || !players.get(0).hasEqualUUID(p) || !lobby){
+        if(players.size() < 2 || !players.get(0).hasEqualUUID(p) || !lobby){
             return false;
         }
         lobby = false;
@@ -73,7 +83,7 @@ public class DSgame {
             }
         }
 
-        if(players.size() < 1){
+        if(players.size() < 2){
             return false;
         }
 
@@ -109,7 +119,7 @@ public class DSgame {
 
         broadcastToPlayers("DeathSwap Game started. Good Luck");
         startThread();
-        //checkGameState();
+        checkGameState();
     }
 
     public boolean playerDeath(Player p){
