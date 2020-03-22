@@ -22,6 +22,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         game.endGame();
+        game.deleteTempWorld();
         getLogger().info("Deathswap plugin disabled");
     }
 }

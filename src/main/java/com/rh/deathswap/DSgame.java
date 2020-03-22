@@ -78,15 +78,9 @@ public class DSgame {
         }
 
         broadcastToPlayers("Generating minigame world. The DeathSwap game will start soon!");
-
         Bukkit.getServer().unloadWorld(gameWorld, false);
 
-        File wcont = Bukkit.getServer().getWorldContainer();
-        for(File f : wcont.listFiles()){
-            if(f.getName().equals(gameWorldName)){
-                deleteFolder(f);
-            }
-        }
+        deleteTempWorld();
 
         wc.copy(players.get(0).player.getWorld());
         wc.seed(seedRandom.nextLong());
@@ -196,6 +190,7 @@ public class DSgame {
             dsp.leave();
         }
         players = new ArrayList<DSplayer>();
+        Bukkit.getServer().unloadWorld(gameWorld, false);
     }
 
     protected void startThread(){
@@ -251,6 +246,15 @@ public class DSgame {
             i = f-1;
         }
         players.get(i).teleport(prevLoc);
+    }
+
+    public void deleteTempWorld(){
+        File wcont = Bukkit.getServer().getWorldContainer();
+        for(File f : wcont.listFiles()){
+            if(f.getName().equals(gameWorldName)){
+                deleteFolder(f);
+            }
+        }
     }
 
     private void deleteFolder(File folder){
