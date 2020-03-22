@@ -1,6 +1,6 @@
 This is a bukkit plugin that enables players to play DeathSwap, that was originally created by SethBling.
 
-<h3>Available commands:<h3>
+<h3>Available commands:</h3>
 
 <ul>
 <li>/dsgame join - joins the lobby</li>
