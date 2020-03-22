@@ -10,6 +10,7 @@ public class Main extends JavaPlugin {
     public void onEnable() {
 
         game = new DSgame(this);
+        game.deleteTempWorld();
 
         this.getCommand("dsgame").setExecutor(new DsgameCommExec(game));
         this.getCommand("dsgame").setTabCompleter(new DsgameCommExec(game));
@@ -22,7 +23,6 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         game.endGame();
-        game.deleteTempWorld();
         getLogger().info("Deathswap plugin disabled");
     }
 }

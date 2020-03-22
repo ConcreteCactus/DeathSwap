@@ -73,6 +73,14 @@ public class DSplayer {
         player.setHealth(20.0);
     }
 
+    public void leaveNextTick(){
+        if(jp == null){
+            leave();
+            return;
+        }
+        Bukkit.getServer().getScheduler().runTask(jp, new PlayerLeaveRunner(this));
+    }
+
     public void leave(){
         state = DsPlayerState.Left;
         player.setGameMode(prevGameMode);

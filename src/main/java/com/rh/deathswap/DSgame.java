@@ -197,7 +197,7 @@ public class DSgame {
 
         lobby = true;
         for(DSplayer dsp : players){
-            dsp.leave();
+            dsp.leaveNextTick();
         }
         players = new ArrayList<DSplayer>();
         Bukkit.getServer().unloadWorld(gameWorld, false);
