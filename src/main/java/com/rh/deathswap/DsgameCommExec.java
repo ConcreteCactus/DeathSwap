@@ -1,5 +1,6 @@
 package com.rh.deathswap;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -53,35 +54,62 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
         if(dsgame.getPlayerCount() < 1){
             first = true;
         }
-        if(!dsgame.addPlayer((Player) commandSender)){
-            ((Player) commandSender).sendRawMessage("Sorry, the game is already running on this server or you already have joined.");
-        }else{
-            ((Player) commandSender).sendRawMessage("Joined deathswap game.");
-            if(first){((Player) commandSender).sendRawMessage("Only you can start the game with '/dsgame-start'"); }
+        int ret = dsgame.addPlayer((Player) commandSender);
+        switch(ret){
+            case 0:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "Joined deathswap game.");
+                break;
+            case -1:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You are already in the lobby.");
+                break;
+            case -2:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "The game has started, sry...");
         }
+
+        if(first){((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "Only you can start the game with '/dsgame start'"); }
 
     }
 
     public void onLeave(CommandSender commandSender){
-        if(!dsgame.removePlayer((Player) commandSender)){
-            ((Player) commandSender).sendRawMessage("You have already left, or you are not in the lobby anymore, if you want to forfeit the game, run '/dsgame-stop'");
-        }else{
-            ((Player) commandSender).sendRawMessage("You have left the lobby.");
+        int ret = dsgame.removePlayer((Player) commandSender);
+        switch(ret){
+            case 0:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You have left the lobby.");
+                break;
+            case -1:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You are not in the lobby anymore, if you want to forfeit the game, run '/dsgame stop'");
+                break;
+            case -2:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You are not in the lobby");
+                break;
         }
     }
 
     public void onStart(CommandSender commandSender){
-
-        if(!dsgame.startGame((Player) commandSender)){
-            ((Player) commandSender).sendRawMessage("You can't start this game, only the player who joined first can or the game is already running.");
+        int ret = dsgame.startGame((Player) commandSender);
+        switch(ret){
+            case 0:
+                break;
+            case -1:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You can't start this game, only the player who joined first can or the game is already running.");
+                break;
         }
     }
 
     public void onStop(CommandSender commandSender){
-        if(!dsgame.playerForfeit((Player) commandSender)){
-            ((Player) commandSender).sendRawMessage("You can't stop playing, maybe because you are not playing at all.");
-        }else{
-            ((Player) commandSender).sendRawMessage("You stopped playing and forfeited the game.");
+
+        int ret = dsgame.removePlayer((Player) commandSender);
+        switch(ret){
+            case 0:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You stopped playing and forfeited the game.");
+                break;
+            case -1:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You can't stop playing, you are in the lobby. If you want to leave the lobby, run /dsgame leave");
+                break;
+            case -2:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You have already stopped playing.");
+                break;
         }
+
     }
 }

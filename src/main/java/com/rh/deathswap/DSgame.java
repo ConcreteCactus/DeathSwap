@@ -36,15 +36,15 @@ public class DSgame {
         seedRandom = new Random(System.currentTimeMillis());
     }
 
-    public boolean addPlayer(Player p){
+    public int addPlayer(Player p){
         if(lobby){
             for(DSplayer dsp : players){
-                if(dsp.hasEqualUUID(p)){return false;}
+                if(dsp.hasEqualUUID(p)){return -1;}
             }
+
             broadcastToPlayers(p.getDisplayName() + " has joined the lobby.");
-            String lobbyplayers = "Already in lobby: ";
+            String lobbyplayers = ChatColor.YELLOW + "Already in lobby: ";
             for(DSplayer dsp : players){
-                dsp.setPlayer();
                 lobbyplayers += dsp.player.getDisplayName() + ", ";
             }
             if(players.size() > 0){
@@ -53,27 +53,28 @@ public class DSgame {
 
             players.add(new DSplayer(p.getUniqueId()));
             players.get(players.size()-1).setPlugin(jplugin);
-            return true;
+            return 0;
         }else{
-            return false;
+            return -2;
         }
     }
 
-    public boolean removePlayer(Player p){
+    public int removePlayer(Player p){
         if(lobby) {
             for (int i = 0; i < players.size(); i++) {
                 if (players.get(i).hasEqualUUID(p)) {
                     players.remove(i);
-                    return true;
+                    return 0;
                 }
             }
+            return -2;
         }
-        return false;
+        return -1;
     }
 
-    public boolean startGame(Player p){
+    public int startGame(Player p){
         if(players.size() < 2 || !players.get(0).hasEqualUUID(p) || !lobby){
-            return false;
+            return -1;
         }
         lobby = false;
 
@@ -84,7 +85,7 @@ public class DSgame {
         }
 
         if(players.size() < 2){
-            return false;
+            return -1;
         }
 
         broadcastToPlayers("Generating minigame world. The DeathSwap game will start soon!");
@@ -99,7 +100,7 @@ public class DSgame {
 
         scatterPlayers();
 
-        return true;
+        return 0;
     }
 
     public void scatterPlayers(){
@@ -126,6 +127,7 @@ public class DSgame {
         for(DSplayer dsp : players){
             if(dsp.hasEqualUUID(p)){
                 dsp.die();
+                broadcastToPlayers(dsp.player.getDisplayName() + " has died.");
                 checkGameState();
                 return true;
             }
@@ -142,17 +144,18 @@ public class DSgame {
         return false;
     }
 
-    public boolean playerForfeit(Player p){
+    public int playerForfeit(Player p){
         if(!lobby){
            for(int i = 0; i < players.size(); i++){
                if(players.get(i).hasEqualUUID(p) && players.get(i).state != DSplayer.DsPlayerState.Left){
                    players.get(i).leave();
                    checkGameState();
-                   return true;
+                   return 0;
                }
            }
+           return -2;
         }
-        return false;
+        return -1;
     }
 
     public void checkGameState(){
@@ -188,7 +191,12 @@ public class DSgame {
 
     public void broadcastToPlayers(String message){
         for(DSplayer dsp : players){
-            dsp.player.sendRawMessage(message);
+            if(dsp.player == null){
+                if(!dsp.setPlayer()){
+                    continue;
+                }
+            }
+            dsp.player.sendRawMessage(ChatColor.YELLOW + message);
         }
     }
 
