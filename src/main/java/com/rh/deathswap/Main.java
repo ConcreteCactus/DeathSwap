@@ -11,11 +11,8 @@ public class Main extends JavaPlugin {
 
         game = new DSgame(this);
 
-        this.getCommand("dsgame-join").setExecutor(new JoinCommExec(game));
-        this.getCommand("dsgame-start").setExecutor(new StartCommExec(game));
-        this.getCommand("dsgame-stop").setExecutor(new StopCommExec(game));
-        this.getCommand("dsgame-leave").setExecutor(new LeaveCommExec(game));
-        this.getCommand("dsgame-debug").setExecutor(new DebugCommExec(game));
+        this.getCommand("dsgame").setExecutor(new DsgameCommExec(game));
+        this.getCommand("dsgame").setTabCompleter(new DsgameCommExec(game));
 
         getServer().getPluginManager().registerEvents(new EventListener(game, this), this);
 

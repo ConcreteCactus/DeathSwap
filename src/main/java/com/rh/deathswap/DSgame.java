@@ -62,7 +62,7 @@ public class DSgame {
     }
 
     public boolean startGame(Player p){
-        if(players.size() < 2 || !players.get(0).hasEqualUUID(p) || !lobby){
+        if(players.size() < 1 || !players.get(0).hasEqualUUID(p) || !lobby){
             return false;
         }
         lobby = false;
@@ -73,7 +73,7 @@ public class DSgame {
             }
         }
 
-        if(players.size() < 2){
+        if(players.size() < 1){
             return false;
         }
 
@@ -115,7 +115,7 @@ public class DSgame {
 
         broadcastToPlayers("DeathSwap Game started. Good Luck");
         startThread();
-        checkGameState();
+        //checkGameState();
     }
 
     public boolean playerDeath(Player p){
