@@ -1,0 +1,21 @@
+name: DeathSwap
+main: com.rh.deathswap.Main
+version: 1.0-alpha
+author: RussianHacker
+description: This plugin enables you to play the deathswap game that was originally made by SethBling.
+commands:
+  dsgame-join:
+    usage: "Usage: /<command>"
+
+  dsgame-start:
+    usage: "Usage: /<command>"
+
+  dsgame-stop:
+    usage: "Usage: /<command>"
+
+  dsgame-leave:
+    usage: "Usage: /<command>"
+
+  dsgame-debug:
+    usage: "Usage: /<command>"
+
