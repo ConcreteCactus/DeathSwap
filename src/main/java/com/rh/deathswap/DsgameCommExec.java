@@ -91,14 +91,19 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
             case 0:
                 break;
             case -1:
-                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You can't start this game, only the player who joined first can or the game is already running.");
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "There is not enough players in the lobby.");
                 break;
+            case -2:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You can't start the game.");
+                break;
+            case -3:
+                ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "The game is already running.");
         }
     }
 
     public void onStop(CommandSender commandSender){
 
-        int ret = dsgame.removePlayer((Player) commandSender);
+        int ret = dsgame.playerForfeit((Player) commandSender);
         switch(ret){
             case 0:
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You stopped playing and forfeited the game.");

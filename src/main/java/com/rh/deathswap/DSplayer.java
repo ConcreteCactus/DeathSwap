@@ -12,7 +12,9 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 
+import java.util.Collection;
 import java.util.UUID;
 
 public class DSplayer {
@@ -26,6 +28,7 @@ public class DSplayer {
 
     double prevHealth = 20.0;
     int prevHunger = 20;
+    Collection<PotionEffect> prevEffects;
 
     enum DsPlayerState{
         Alive, Dead, Left
@@ -51,6 +54,15 @@ public class DSplayer {
     public void start(Location loc){
         prevLocation = player.getLocation();
         prevGameMode = player.getGameMode();
+
+        prevHealth = player.getHealth();
+        prevHunger = player.getFoodLevel();
+        prevEffects = player.getActivePotionEffects();
+
+        for(PotionEffect pe : prevEffects){
+            player.removePotionEffect(pe.getType());
+        }
+
         as = (ArmorStand) prevLocation.getWorld().spawnEntity(prevLocation, EntityType.ARMOR_STAND);
         constructArmorStand();
 
@@ -59,9 +71,6 @@ public class DSplayer {
         player.setGameMode(GameMode.SURVIVAL);
         player.teleport(loc);
         player.getInventory().clear();
-
-        prevHealth = player.getHealth();
-        prevHunger = player.getFoodLevel();
 
         player.setHealth(20.0);
         player.setFoodLevel(20);
@@ -101,6 +110,13 @@ public class DSplayer {
 
         player.setHealth(prevHealth);
         player.setFoodLevel(prevHunger);
+        Collection<PotionEffect> peffects = player.getActivePotionEffects();
+        for(PotionEffect pe : peffects){
+            player.removePotionEffect(pe.getType());
+        }
+        for(PotionEffect pe : prevEffects){
+            player.addPotionEffect(pe);
+        }
 
     }
 

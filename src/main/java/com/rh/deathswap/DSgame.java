@@ -64,6 +64,8 @@ public class DSgame {
             for (int i = 0; i < players.size(); i++) {
                 if (players.get(i).hasEqualUUID(p)) {
                     players.remove(i);
+                    broadcastToPlayers(ChatColor.YELLOW + p.getDisplayName() + " has left the lobby.");
+                    players.get(0).player.sendRawMessage(ChatColor.YELLOW + "Only you can start the game with '/dsgame start'");
                     return 0;
                 }
             }
@@ -73,9 +75,16 @@ public class DSgame {
     }
 
     public int startGame(Player p){
-        if(players.size() < 2 || !players.get(0).hasEqualUUID(p) || !lobby){
+        if(players.size() < 1){
             return -1;
         }
+        if(!players.get(0).hasEqualUUID(p)){
+            return -2;
+        }
+        if(!lobby){
+            return -3;
+        }
+
         lobby = false;
 
         for(DSplayer dsp : players){
@@ -84,7 +93,7 @@ public class DSgame {
             }
         }
 
-        if(players.size() < 2){
+        if(players.size() < 1){
             return -1;
         }
 
@@ -120,7 +129,7 @@ public class DSgame {
 
         broadcastToPlayers("DeathSwap Game started. Good Luck");
         startThread();
-        checkGameState();
+        //checkGameState();
     }
 
     public boolean playerDeath(Player p){
@@ -172,11 +181,11 @@ public class DSgame {
             }
             if(winner == null){
                 broadcastToPlayers("A problem has occurred, aborting game.");
-                endGame();
+                endGame(false);
                 return;
             }
             broadcastToPlayers(winner.player.getDisplayName() + " won the DeathSwap game. Score: " + winner.score);
-            endGame();
+            endGame(false);
             broadcastToPlayers("Scores are:");
             for(DSplayer dsp : players){
                 broadcastToPlayers(dsp.player.getDisplayName() + " : " + dsp.score);
@@ -200,12 +209,16 @@ public class DSgame {
         }
     }
 
-    public void endGame(){
+    public void endGame(boolean fast){
         stopThread();
 
         lobby = true;
         for(DSplayer dsp : players){
-            dsp.leaveNextTick();
+            if(fast){
+                dsp.leave();
+            }else{
+                dsp.leaveNextTick();
+            }
         }
         players = new ArrayList<DSplayer>();
         Bukkit.getServer().unloadWorld(gameWorld, false);
