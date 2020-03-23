@@ -9,8 +9,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class DSgame {
-    ArrayList<DSplayer> players;
-    boolean lobby;
+
+    public JavaPlugin jplugin;
+
+    ArrayList<DSplayer> players; // ArrayList to hold all the players regardless of the game state
+    boolean lobby; // true : we are in the lobby, false : the game has started
 
     public boolean trunning = false;
 
@@ -18,8 +21,6 @@ public class DSgame {
     World gameWorld;
 
     Random seedRandom;
-
-    public JavaPlugin jplugin;
 
     public static final String gameWorldName = "dsgame-temporaryworld";
     public static final float odist = 2000.0f;
