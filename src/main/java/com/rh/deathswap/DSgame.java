@@ -10,23 +10,22 @@ import java.util.Random;
 
 public class DSgame {
 
+    public static final String gameWorldName = "dsgame-temporaryworld"; //the name of tempworld
+    public static final float odist = 2000.0f;
+
+    public static final double swaptimemin = 100.0; //Values for the minimal and maximal time between swaps
+    public static final double swaptimemax = 150.0;
+
     public JavaPlugin jplugin;
 
     ArrayList<DSplayer> players; // ArrayList to hold all the players regardless of the game state
     boolean lobby; // true : we are in the lobby, false : the game has started
 
-    public boolean trunning = false;
+    public boolean swapping = false;
 
     WorldCreator wc;
     World gameWorld;
-
     Random seedRandom;
-
-    public static final String gameWorldName = "dsgame-temporaryworld";
-    public static final float odist = 2000.0f;
-
-    public static final double swaptimemin = 100.0;
-    public static final double swaptimemax = 150.0;
 
 
     public DSgame(JavaPlugin plugin){
@@ -37,6 +36,7 @@ public class DSgame {
         seedRandom = new Random(System.currentTimeMillis());
     }
 
+    //This runs when a player executes /dsgame join
     public int addPlayer(Player p){
         if(lobby){
             for(DSplayer dsp : players){
@@ -59,7 +59,7 @@ public class DSgame {
             return -2;
         }
     }
-
+    //This runs when a player executes /dsgame leave
     public int removePlayer(Player p){
         if(lobby) {
             for (int i = 0; i < players.size(); i++) {
@@ -75,6 +75,7 @@ public class DSgame {
         return -1;
     }
 
+    //This runs when a player executes /dsgame start
     public int startGame(Player p){
         if(players.size() < 2){
             return -1;
@@ -113,6 +114,10 @@ public class DSgame {
         return 0;
     }
 
+    //At the start of the game this will teleport every player to their random location
+    //1. set some constant math values
+    //2. seek the top block of the given 2d coordinates
+    //3. start the swapper loop and teleport players
     public void scatterPlayers(){
         doMaths(players.size());
 
@@ -133,6 +138,7 @@ public class DSgame {
         checkGameState();
     }
 
+    //This runs when a player dies in a deathswap game
     public boolean playerDeath(Player p){
         for(DSplayer dsp : players){
             if(dsp.hasEqualUUID(p)){
@@ -145,6 +151,7 @@ public class DSgame {
         return false;
     }
 
+    //returns true if the player is playing and is still alive
     public boolean isPlaying(Player p){
         for(DSplayer dsp : players){
             if(dsp.hasEqualUUID(p) || dsp.state == DSplayer.DsPlayerState.Alive){
@@ -154,6 +161,7 @@ public class DSgame {
         return false;
     }
 
+    //This runs when a player executes /dsgame stop
     public int playerForfeit(Player p){
         if(!lobby){
            for(int i = 0; i < players.size(); i++){
@@ -168,6 +176,7 @@ public class DSgame {
         return -1;
     }
 
+    //checks whether there is only one player alive, if so, it ends the game
     public void checkGameState(){
         int aliveCount = 0;
         for(DSplayer dsp : players){
@@ -207,7 +216,9 @@ public class DSgame {
             dsp.player.sendRawMessage(ChatColor.YELLOW + message);
         }
     }
-
+    // This ends the game
+    // fast = true; -> will use DSplayer.leave() instead of DSplayer.leaveNextTick(). Shouldn't generally be used
+    // fast = false -> will use DSplayer.leaveNextTick()
     public void endGame(boolean fast){
         stopSwapping();
 
@@ -228,20 +239,23 @@ public class DSgame {
         }
     }
 
+    //This starts the swapper - the class that handles the swapping
     protected void startSwapping(){
-        trunning = true;
+        swapping = true;
         Bukkit.getServer().getScheduler().runTaskLater(jplugin, new Swapper(this), (long)getRandSwapTime() * 20);
     }
 
     protected void stopSwapping(){
-        trunning = false;
+        swapping = false;
     }
 
+    //Returns a random value between swaptimemax and swaptimemin
     public double getRandSwapTime(){
         double time = (Math.random() * (swaptimemax - swaptimemin)) + swaptimemin;
         return time;
     }
 
+    //This sets some values with which the random position of the players will be calculated
     private Vector2d sco;
     private double alpha, range;
     private void doMaths(int numOfPlayers){
@@ -257,10 +271,13 @@ public class DSgame {
 
     }
 
+    //Returns the starting position of a player for the given index
     private Vector2d getStartingCoordinates(int index){
         return new Vector2d(Math.cos(index * alpha) * range + sco.x, Math.sin(index * alpha) * range + sco.y);
     }
 
+    //this is the function that is triggered by the swapper
+    //This swaps the players around
     public void swap() {
         Location prevLoc;
         int i = 0;
@@ -283,6 +300,7 @@ public class DSgame {
         players.get(i).teleport(prevLoc);
     }
 
+    //A function to delete the temporary gameworld
     public void deleteTempWorld(){
         File wcont = Bukkit.getServer().getWorldContainer();
         for(File f : wcont.listFiles()){
@@ -292,6 +310,7 @@ public class DSgame {
         }
     }
 
+    //This function deletes a folder recursively
     private void deleteFolder(File folder){
         if(folder.isDirectory()){
             for(File f : folder.listFiles()){

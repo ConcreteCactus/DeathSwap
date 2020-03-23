@@ -21,12 +21,17 @@ public class EventListener implements Listener {
         plugin = javaPlugin;
     }
 
+    //This is to clear some lag while generating the gameWorld
     @EventHandler
     public void onWorldInitEvent(WorldInitEvent event){
         if(event.getWorld().getName() == game.gameWorldName){
             event.getWorld().setKeepSpawnInMemory(false);
         }
     }
+
+    //This function handles the armor stands when right clicked.
+    //When the player right clicks on it, this checks if he is the player the armor stand corresponds to.
+    //Then it will reset the player's state as if he had just lef the game
     @EventHandler(ignoreCancelled = true)
     public void onPlayerArmorStandManipulate(PlayerArmorStandManipulateEvent event){
         String tag = event.getRightClicked().getPersistentDataContainer().get(new NamespacedKey(plugin, "forDSGAME"), PersistentDataType.STRING);
@@ -46,6 +51,8 @@ public class EventListener implements Listener {
         }
     }
 
+
+    //This checks is a player died is in a deathswap game or not, is so, it will call the playerDeath() function in DSgame
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDeath(EntityDamageEvent event){
         if((event.getEntity() instanceof Player) && game.isPlaying((Player) event.getEntity()) && event.getFinalDamage() >= ((Player) event.getEntity()).getHealth()){

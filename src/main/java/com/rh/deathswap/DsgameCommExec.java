@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
-
+// This is the CommandExecutor and TabCompleter class of the /dsgame command
 public class DsgameCommExec  implements CommandExecutor, TabCompleter {
 
     DSgame dsgame;
@@ -59,10 +59,10 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
             case 0:
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "Joined deathswap game.");
                 break;
-            case -1:
+            case -1: // Already in lobby
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You are already in the lobby.");
                 break;
-            case -2:
+            case -2: // Game has already started
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "The game has started, sry...");
         }
 
@@ -76,10 +76,10 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
             case 0:
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You have left the lobby.");
                 break;
-            case -1:
+            case -1: // Game has started
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You are not in the lobby anymore, if you want to forfeit the game, run '/dsgame stop'");
                 break;
-            case -2:
+            case -2: // Player is not in lobby
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You are not in the lobby");
                 break;
         }
@@ -90,13 +90,13 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
         switch(ret){
             case 0:
                 break;
-            case -1:
+            case -1: // The number of online players in lobby is less than 2
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "There is not enough players in the lobby.");
                 break;
-            case -2:
+            case -2: // commandSender is not the first player in the lobby
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You can't start the game.");
                 break;
-            case -3:
+            case -3: // The game has already started
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "The game is already running.");
         }
     }
@@ -108,10 +108,10 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
             case 0:
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You stopped playing and forfeited the game.");
                 break;
-            case -1:
+            case -1: // Player is still in lobby
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You can't stop playing, you are in the lobby. If you want to leave the lobby, run /dsgame leave");
                 break;
-            case -2:
+            case -2: // Player is not in lobby
                 ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + "You have already stopped playing.");
                 break;
         }

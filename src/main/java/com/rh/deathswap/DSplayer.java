@@ -22,10 +22,12 @@ public class DSplayer {
     int score;
     UUID uuid;
     GameMode prevGameMode;
-    ArmorStand as;
+
+    ArmorStand as; // an armor stand to hold some inforamtion about the player currently playing deathswap game
 
     JavaPlugin jp;
 
+    public Location prevLocation;
     double prevHealth = 20.0;
     int prevHunger = 20;
     Collection<PotionEffect> prevEffects;
@@ -36,13 +38,13 @@ public class DSplayer {
 
     DsPlayerState state;
 
-    public Location prevLocation;
-
     public DSplayer(UUID id){
         uuid = id;
         score = 0;
     }
 
+    //A function to set the Player member, to be able to handle player-related tasks
+    //This is here because of disconnecting and reconnecting
     public boolean setPlayer(){
         player = Bukkit.getServer().getPlayer(uuid);
         if(!player.isOnline()){
@@ -51,6 +53,7 @@ public class DSplayer {
         return true;
     }
 
+    //This saves the player state in the main world and teleports him to the game world
     public void start(Location loc){
         prevLocation = player.getLocation();
         prevGameMode = player.getGameMode();
@@ -63,7 +66,7 @@ public class DSplayer {
             player.removePotionEffect(pe.getType());
         }
 
-        as = (ArmorStand) prevLocation.getWorld().spawnEntity(prevLocation, EntityType.ARMOR_STAND);
+        as = (ArmorStand) prevLocation.getWorld().spawnEntity(prevLocation, EntityType.ARMOR_STAND); //An armor stand will be set up in the main world, because that is how I save ones inventory.
         constructArmorStand();
 
         score = 0;
@@ -76,12 +79,14 @@ public class DSplayer {
         player.setFoodLevel(20);
     }
 
+    //This runs when the payer dies in a deathswap game.
     public void die(){
         state = DsPlayerState.Dead;
         player.setGameMode(GameMode.SPECTATOR);
         player.setHealth(20.0);
     }
 
+    //This does almost the same thing as leave(), but this is less error prone
     public void leaveNextTick(){
         if(jp == null){
             leave();
@@ -90,6 +95,8 @@ public class DSplayer {
         Bukkit.getServer().getScheduler().runTask(jp, new PlayerLeaveRunner(this));
     }
 
+    //This runs when a player leaves the game
+    //This teleports the player back to the main world and sets the pre-game state
     public void leave(){
         state = DsPlayerState.Left;
         player.setGameMode(prevGameMode);
@@ -110,6 +117,7 @@ public class DSplayer {
 
         player.setHealth(prevHealth);
         player.setFoodLevel(prevHunger);
+
         Collection<PotionEffect> peffects = player.getActivePotionEffects();
         for(PotionEffect pe : peffects){
             player.removePotionEffect(pe.getType());
@@ -120,10 +128,13 @@ public class DSplayer {
 
     }
 
+    //A small function to check if the player is connected to the same IRL person
     public boolean hasEqualUUID(Player p){
         return uuid.equals(p.getUniqueId());
     }
 
+    //This sets up the armor stand that will hold the players inventory
+    //It will only be destructible by the player that has the same UUID by a right-click, it will also call the leave() function
     private void constructArmorStand(){
         as.setArms(true);
         as.setBasePlate(false);

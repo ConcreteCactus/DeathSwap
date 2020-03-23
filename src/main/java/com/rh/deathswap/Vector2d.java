@@ -1,7 +1,7 @@
 package com.rh.deathswap;
 
 
-// A simple class for two dimensional float vectors
+// A simple class for two dimensional double vectors
 public class Vector2d {
 
     double x, y;

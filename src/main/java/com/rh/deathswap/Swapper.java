@@ -2,6 +2,7 @@ package com.rh.deathswap;
 
 import org.bukkit.Bukkit;
 
+//This class handles the swapping
 public class Swapper implements Runnable {
 
     DSgame game;
@@ -12,7 +13,7 @@ public class Swapper implements Runnable {
 
     @Override
     public void run() {
-        if(game.trunning){
+        if(game.swapping){
             game.swap();
             Bukkit.getServer().getScheduler().runTaskLater(game.jplugin, this, (long)game.getRandSwapTime() * 20);
         }
