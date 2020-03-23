@@ -45,7 +45,7 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
-        return Arrays.asList("join", "leave", "start", "stop");
+        return (args.length == 1)? Arrays.asList("join", "leave", "start", "stop") : null;
     }
 
     public void onJoin(CommandSender commandSender){

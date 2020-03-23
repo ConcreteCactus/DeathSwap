@@ -65,7 +65,7 @@ public class DSgame {
                 if (players.get(i).hasEqualUUID(p)) {
                     players.remove(i);
                     broadcastToPlayers(ChatColor.YELLOW + p.getDisplayName() + " has left the lobby.");
-                    players.get(0).player.sendRawMessage(ChatColor.YELLOW + "Only you can start the game with '/dsgame start'");
+                    if(players.size() >= 1){players.get(0).player.sendRawMessage(ChatColor.YELLOW + "Only you can start the game with '/dsgame start'");}
                     return 0;
                 }
             }
@@ -75,7 +75,7 @@ public class DSgame {
     }
 
     public int startGame(Player p){
-        if(players.size() < 1){
+        if(players.size() < 2){
             return -1;
         }
         if(!players.get(0).hasEqualUUID(p)){
@@ -93,7 +93,7 @@ public class DSgame {
             }
         }
 
-        if(players.size() < 1){
+        if(players.size() < 2){
             return -1;
         }
 
@@ -128,8 +128,8 @@ public class DSgame {
         }
 
         broadcastToPlayers("DeathSwap Game started. Good Luck");
-        startThread();
-        //checkGameState();
+        startSwapping();
+        checkGameState();
     }
 
     public boolean playerDeath(Player p){
@@ -146,7 +146,7 @@ public class DSgame {
 
     public boolean isPlaying(Player p){
         for(DSplayer dsp : players){
-            if(dsp.hasEqualUUID(p)){
+            if(dsp.hasEqualUUID(p) || dsp.state == DSplayer.DsPlayerState.Alive){
                 return true;
             }
         }
@@ -200,36 +200,39 @@ public class DSgame {
 
     public void broadcastToPlayers(String message){
         for(DSplayer dsp : players){
-            if(dsp.player == null){
-                if(!dsp.setPlayer()){
+            if(dsp.player == null && !dsp.setPlayer()){
                     continue;
-                }
             }
             dsp.player.sendRawMessage(ChatColor.YELLOW + message);
         }
     }
 
     public void endGame(boolean fast){
-        stopThread();
+        stopSwapping();
 
-        lobby = true;
-        for(DSplayer dsp : players){
-            if(fast){
-                dsp.leave();
-            }else{
-                dsp.leaveNextTick();
+        if(!lobby){
+            lobby = true;
+            for(DSplayer dsp : players){
+                if(fast){
+                    dsp.leave();
+                }else{
+                    dsp.leaveNextTick();
+                }
             }
+            players = new ArrayList<DSplayer>();
+            Bukkit.getServer().unloadWorld(gameWorld, false);
+        }else{
+            broadcastToPlayers("Everyone was kicked out of the lobby");
+            players = new ArrayList<DSplayer>();
         }
-        players = new ArrayList<DSplayer>();
-        Bukkit.getServer().unloadWorld(gameWorld, false);
     }
 
-    protected void startThread(){
+    protected void startSwapping(){
         trunning = true;
         Bukkit.getServer().getScheduler().runTaskLater(jplugin, new Swapper(this), (long)getRandSwapTime() * 20);
     }
 
-    protected void stopThread(){
+    protected void stopSwapping(){
         trunning = false;
     }
 
