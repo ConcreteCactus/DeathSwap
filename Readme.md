@@ -7,6 +7,8 @@ This is a bukkit plugin that enables players to play the game called DeathSwap. 
 <li>/dsgame leave - leaves the lobby</li>
 <li>/dsgame start - starts a new DeathSwap game with the players in the lobby</li>
 <li>/dsgame stop - you commit suicide and leave the DeathSwap game</li>
+<li>/dsgame settings - set different options of the game</li>
+<li>/dsgame info - display information about he game</li>
 </ul>
 
 <h3>Installation:</h3>
