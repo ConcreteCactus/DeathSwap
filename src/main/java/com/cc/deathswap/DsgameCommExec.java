@@ -106,6 +106,9 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
             case "info":
                 onInfo(commandSender, args);
                 break;
+            case "settings":
+                onSettings(commandSender, args);
+                break;
             default:
                 return false;
         }
@@ -120,11 +123,32 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
                 return Arrays.asList("join", "leave", "start", "stop", "info", "settings");
 
             case 2:
+            case 3:
+            case 4:
                 switch(args[0]){
                     case "info":
-                        return Arrays.asList(infoMessages.keySet().toArray(new String[0]));
+                        return (args.length == 2)? Arrays.asList(infoMessages.keySet().toArray(new String[0])) : null;
                     case "settings":
-                        return Arrays.asList("...");
+                        switch(args.length){
+                            case 2:
+                                return Arrays.asList("get", "set");
+                            case 3:
+                                return Arrays.asList("difficulty", "min-swap-time", "max-swap-time");
+                            case 4:
+                                if(args[1].equals("set")){
+                                    switch(args[2]){
+                                        case "difficulty":
+                                            return Arrays.asList("easy", "normal", "hard", "peaceful");
+                                        case "min-swap-time":
+                                        case "max-swap-time":
+                                            return Arrays.asList("<value>");
+                                        default:
+                                            return null;
+                                    }
+                                }else{
+                                    return null;
+                                }
+                        }
                     default:
                         return null;
                 }
@@ -215,15 +239,59 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
         }
     }
 
+    private void onSettings(CommandSender commandSender, String[] args) {
+        if(args[1].equals("get")){
+            switch(args[2]){
+                case "min-swap-time":
+                    sendMessage(commandSender, args[2] + " is " + dsgame.getMinTime());
+                    break;
+                case "max-swap-time":
+                    sendMessage(commandSender, args[2] + " is " + dsgame.getMaxTime());
+                    break;
+                case "difficulty":
+                    sendMessage(commandSender, args[2] + " is " + dsgame.getDifficulty());
+                    break;
+            }
+        }else if(args[1].equals("set")){
+            if(commandSender instanceof Player){
+                if(dsgame.isFirst((Player) commandSender)){
+                    switch(args[2]){
+                        case "min-swap-time":
+                            dsgame.setMinTime(Double.parseDouble(args[3]));
+                            if(dsgame.getMinTime() > dsgame.getMaxTime()){dsgame.setMaxTime(Double.parseDouble(args[3]));}
+                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getMinTime());
+                            break;
+                        case "max-swap-time":
+                            dsgame.setMaxTime(Double.parseDouble(args[3]));
+                            if(dsgame.getMinTime() > dsgame.getMaxTime()){dsgame.setMinTime(Double.parseDouble(args[3]));}
+                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getMaxTime());
+                            break;
+                        case "difficulty":
+                            dsgame.setDifficulty(args[3]);
+                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getDifficulty());
+                            break;
+                    }
+                }else{
+                    sendMessage(commandSender, "You are not the first player in the lobby, you can't use set.");
+                }
+            }else{
+                sendMessage(commandSender, "Only a player can execute this command with set.");
+            }
+        }else{
+            sendMessage(commandSender, "Second argument must be get or set.");
+        }
+    }
+
+
     private void sendMessage(CommandSender commandSender, String message) {
         if(commandSender instanceof Player){
-            ((Player) commandSender).sendRawMessage(ChatColor.YELLOW + message);
+            commandSender.sendMessage(ChatColor.YELLOW + message);
         }
     }
 
     private void sendMessage(CommandSender commandSender, ChatColor color, String message){
         if(commandSender instanceof Player){
-            ((Player) commandSender).sendRawMessage(color + message);
+            commandSender.sendMessage(color + message);
         }
     }
 }

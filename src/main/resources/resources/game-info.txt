@@ -30,5 +30,5 @@ To get more info about certain variables, execute\:
 
 :max-swap-time:This controls the maximal time between swaps.::
 :min-swap-time:This controls the minimal time between swaps. (Has to be less than or equal to max-swap-time.)::
-:difficulty:The game difficulty in the game world. (0, 1, 2, 3)::
+:difficulty:The game difficulty in the game world. (easy, normal, hard, peaceful)::
 # More are coming... I hope.

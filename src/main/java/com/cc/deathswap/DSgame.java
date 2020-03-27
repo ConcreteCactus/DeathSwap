@@ -13,8 +13,10 @@ public class DSgame {
     public static final String gameWorldName = "dsgame-temporaryworld"; //the name of tempworld
     public static final float odist = 2000.0f;
 
-    public static final double swaptimemin = 100.0; //Values for the minimal and maximal time between swaps
-    public static final double swaptimemax = 150.0;
+    //Values, that can be set by players
+    public double swaptimemin; //Values for the minimal and maximal time between swaps
+    public double swaptimemax;
+    public Difficulty difficulty;
 
     public JavaPlugin jplugin;
 
@@ -34,6 +36,69 @@ public class DSgame {
         lobby = true;
         wc = new WorldCreator(gameWorldName);
         seedRandom = new Random(System.currentTimeMillis());
+        resetSettings();
+    }
+
+    public void resetSettings(){
+        swaptimemin = 100.0;
+        swaptimemax = 150.0;
+        difficulty = Difficulty.NORMAL;
+    }
+
+    public void setMaxTime(double mt){
+        swaptimemax = mt;
+    }
+
+    public void setMinTime(double mt){
+        swaptimemin = mt;
+    }
+
+    public boolean setDifficulty(String diff){ //this function will check if the difficulty entered is valid and return true if it is.
+        switch(diff){
+            case "easy":
+                difficulty = Difficulty.EASY;
+                break;
+            case "normal":
+                difficulty = Difficulty.NORMAL;
+                break;
+            case "hard":
+                difficulty = Difficulty.HARD;
+                break;
+            case "peaceful":
+                difficulty = Difficulty.PEACEFUL;
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
+    public double getMaxTime(){
+        return swaptimemax;
+    }
+
+    public double getMinTime(){
+        return swaptimemin;
+    }
+
+    public String getDifficulty(){
+        switch(difficulty){
+            case EASY:
+                return "easy";
+            case NORMAL:
+                return "normal";
+            case HARD:
+                return "hard";
+            case PEACEFUL:
+                return "peaceful";
+            default:
+                return "I have no idea... Something is wrong, use '/reload'";
+        }
+    }
+
+    //Returns true if the given player is the first int the players array.
+    public boolean isFirst(Player p){
+        return players.size() > 0 && players.get(0).hasEqualUUID(p);
     }
 
     //This runs when a player executes /dsgame join
@@ -108,6 +173,7 @@ public class DSgame {
         wc.seed(seedRandom.nextLong());
         gameWorld = wc.createWorld();
         gameWorld.setKeepSpawnInMemory(false);
+        gameWorld.setDifficulty(difficulty);
 
         scatterPlayers();
 
