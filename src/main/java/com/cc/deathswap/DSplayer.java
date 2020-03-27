@@ -1,4 +1,4 @@
-package com.rh.deathswap;
+package com.cc.deathswap;
 
 import org.bukkit.*;
 import org.bukkit.block.BlockState;

@@ -1,4 +1,4 @@
-This is a bukkit plugin that enables players to play the game called DeathSwap, that was originally created by SethBling.
+This is a bukkit plugin that enables players to play the game called DeathSwap. It was originally created by SethBling.
 
 <h3>Available commands:</h3>
 

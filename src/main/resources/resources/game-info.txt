@@ -1,0 +1,34 @@
+# The /dsgame info command will be reading from this file.
+# To make an info page, simply use :<info-page-name>:<info text>::
+# To use a colon in text use '\:'. To use a '\' in text, use '\\'.
+
+::This is a server minigame that enables players to play the game called DeathSwap. It was originally created by SethBling.
+To learn more, use '/dsgame info game', '/dsgame info commands', or '/dsgame info info'.::
+
+:game:At the start of the game the people in the lobby will be teleported into another world, each of them at random places.
+The game will then start swapping the position of players. Your goal is to get the other players killed, and be the last one standing.::
+
+:commands:/dsgame join \: Join the lobby
+/dsgame leave \: Leave the lobby
+/dsgame start \: Start the game
+/dsgame stop \: Commit suicide and leave the ongoing game
+/dsgame info \: Learn more about the game
+/dsgame settings \: Set different variables of the game::
+
+:join:Joins the game lobby, if the game is running, you can not do this.::
+:leave:Leaves the lobby, if the game is already running, you should instead use '/dsgame stop'.::
+:start:Starts the game, the online players in the lobby generates the game world, and teleports the players.
+This can only be executed by the first player who joined the lobby.::
+
+:stop:This stops the game for the player who executed the command.::
+:info:This command helps new players learn about the game\:
+/dsgame info <command> : will print additional information in the chat.::
+
+:settings:This command will let you tweak the rules of the game to your needs, (can only be used by the first joined player...)
+To get more info about certain variables, execute\:
+'/dsgame info [set | get] <variable-name> [<value>]'::
+
+:max-swap-time:This controls the maximal time between swaps.::
+:min-swap-time:This controls the minimal time between swaps. (Has to be less than or equal to max-swap-time.)::
+:difficulty:The game difficulty in the game world. (0, 1, 2, 3)::
+# More are coming... I hope.

@@ -1,4 +1,4 @@
-package com.rh.deathswap;
+package com.cc.deathswap;
 
 import org.bukkit.Bukkit;
 

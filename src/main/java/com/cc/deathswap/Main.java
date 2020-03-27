@@ -1,4 +1,4 @@
-package com.rh.deathswap;
+package com.cc.deathswap;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,8 +12,8 @@ public class Main extends JavaPlugin {
         game = new DSgame(this);
         game.deleteTempWorld(); // tempworld is the separate world to host a deathswap game
 
-        this.getCommand("dsgame").setExecutor(new DsgameCommExec(game));
-        this.getCommand("dsgame").setTabCompleter(new DsgameCommExec(game));
+        this.getCommand("dsgame").setExecutor(new DsgameCommExec(game, this));
+        this.getCommand("dsgame").setTabCompleter(new DsgameCommExec(game, this));
 
         getServer().getPluginManager().registerEvents(new EventListener(game, this), this);
 
