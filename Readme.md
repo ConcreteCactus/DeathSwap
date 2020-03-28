@@ -14,11 +14,12 @@ This is a bukkit plugin that enables players to play the game called DeathSwap. 
 <h3>Installation:</h3>
 
 <ol>
-<li>Go to this link: (I haven't uploaded the file yet, you have to compile the code yourself... sry)</li>
+<li>Go to this link: <a href="https://dev.bukkit.org/projects/deathswap-plugin">https://dev.bukkit.org/projects/deathswap-plugin</a> </li>
 <li>Download the .jar file</li>
 <li>Put the jar file in the plugins folder of your bukkit server</li>
 </ol>
 
+<b>Don't name your main world "dsgame-temporaryworld" it would get deleted the minute you load the plugin</b>
 
 
 

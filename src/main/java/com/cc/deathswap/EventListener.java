@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,6 +58,17 @@ public class EventListener implements Listener {
         if((event.getEntity() instanceof Player) && game.isPlaying((Player) event.getEntity()) && event.getFinalDamage() >= ((Player) event.getEntity()).getHealth()){
             game.playerDeath((Player) event.getEntity());
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent event){
+        if(game.isPlaying(event.getPlayer())){
+            if(game.lobby){
+                game.removePlayer(event.getPlayer());
+            }else{
+                game.playerForfeit(event.getPlayer());
+            }
         }
     }
 }

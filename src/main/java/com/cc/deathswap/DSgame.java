@@ -131,7 +131,7 @@ public class DSgame {
                 if (players.get(i).hasEqualUUID(p)) {
                     players.remove(i);
                     broadcastToPlayers(ChatColor.YELLOW + p.getDisplayName() + " has left the lobby.");
-                    if(players.size() >= 1){players.get(0).player.sendRawMessage(ChatColor.YELLOW + "Only you can start the game with '/dsgame start'");}
+                    if(players.size() >= 1 && i == 0){players.get(0).player.sendRawMessage(ChatColor.YELLOW + "Only you can start the game with '/dsgame start'");}
                     return 0;
                 }
             }
