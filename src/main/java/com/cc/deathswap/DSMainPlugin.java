@@ -25,4 +25,8 @@ public class Main extends JavaPlugin {
         game.endGame(true); //Stops the game
         getLogger().info("Deathswap plugin disabled");
     }
+
+    private void loadConfig(){
+        getConfig().addDefault();
+    }
 }
