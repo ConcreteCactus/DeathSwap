@@ -243,13 +243,13 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
         if(args[1].equals("get")){
             switch(args[2]){
                 case "min-swap-time":
-                    sendMessage(commandSender, args[2] + " is " + dsgame.getMinTime());
+                    sendMessage(commandSender, args[2] + " is " + dsgame.getMinTime() + " seconds.");
                     break;
                 case "max-swap-time":
-                    sendMessage(commandSender, args[2] + " is " + dsgame.getMaxTime());
+                    sendMessage(commandSender, args[2] + " is " + dsgame.getMaxTime() + " seconds.");
                     break;
                 case "difficulty":
-                    sendMessage(commandSender, args[2] + " is " + dsgame.getDifficulty());
+                    sendMessage(commandSender, args[2] + " is " + dsgame.getDifficulty() + ".");
                     break;
             }
         }else if(args[1].equals("set")){
@@ -259,16 +259,16 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
                         case "min-swap-time":
                             dsgame.setMinTime(Double.parseDouble(args[3]));
                             if(dsgame.getMinTime() > dsgame.getMaxTime()){dsgame.setMaxTime(Double.parseDouble(args[3]));}
-                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getMinTime());
+                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getMinTime() + " seconds.");
                             break;
                         case "max-swap-time":
                             dsgame.setMaxTime(Double.parseDouble(args[3]));
                             if(dsgame.getMinTime() > dsgame.getMaxTime()){dsgame.setMinTime(Double.parseDouble(args[3]));}
-                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getMaxTime());
+                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getMaxTime() + " seconds.");
                             break;
                         case "difficulty":
                             dsgame.setDifficulty(args[3]);
-                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getDifficulty());
+                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getDifficulty() + ".");
                             break;
                     }
                 }else{

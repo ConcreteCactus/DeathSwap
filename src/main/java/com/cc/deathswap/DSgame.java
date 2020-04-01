@@ -2,23 +2,25 @@ package com.cc.deathswap;
 
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class DSgame {
 
-    public static final String gameWorldName = "dsgame-temporaryworld"; //the name of tempworld
+    public String gameWorldName = "dsgame-temporaryworld"; //the name of tempworld
     public static final float odist = 2000.0f;
 
     //Values, that can be set by players
-    public double swaptimemin; //Values for the minimal and maximal time between swaps
-    public double swaptimemax;
-    public Difficulty difficulty;
+    private double swaptimemin; //Values for the minimal and maximal time between swaps
+    private double swaptimemax;
+    private Difficulty difficulty;
 
-    public JavaPlugin jplugin;
+    public DSMainPlugin jplugin;
 
     ArrayList<DSplayer> players; // ArrayList to hold all the players regardless of the game state
     boolean lobby; // true : we are in the lobby, false : the game has started
@@ -30,19 +32,16 @@ public class DSgame {
     Random seedRandom;
 
 
-    public DSgame(JavaPlugin plugin){
+    public DSgame(DSMainPlugin plugin){
         jplugin = plugin;
         players = new ArrayList<DSplayer>();
         lobby = true;
         wc = new WorldCreator(gameWorldName);
         seedRandom = new Random(System.currentTimeMillis());
-        resetSettings();
     }
 
     public void resetSettings(){
-        swaptimemin = 100.0;
-        swaptimemax = 150.0;
-        difficulty = Difficulty.NORMAL;
+        jplugin.loadConfig();
     }
 
     public void setMaxTime(double mt){
@@ -53,7 +52,7 @@ public class DSgame {
         swaptimemin = mt;
     }
 
-    public boolean setDifficulty(String diff){ //this function will check if the difficulty entered is valid and return true if it is.
+    public boolean setDifficulty(@Nullable String diff){ //this function will check if the difficulty entered is valid and return true if it is.
         switch(diff){
             case "easy":
                 difficulty = Difficulty.EASY;
@@ -70,6 +69,13 @@ public class DSgame {
             default:
                 return false;
         }
+        return true;
+    }
+
+    public boolean setWorldName(@Nullable String name){
+        if(name == null || name == ""){return false;}
+        gameWorldName = name;
+        wc = new WorldCreator(gameWorldName);
         return true;
     }
 

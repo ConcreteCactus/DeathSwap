@@ -1,5 +1,5 @@
 name: DeathSwap
-main: com.cc.deathswap.Main
+main: com.cc.deathswap.DSMainPlugin
 version: 1.0
 author: ConcreteCactus
 description: This plugin enables you to play the deathswap game that was originally made by SethBling.
