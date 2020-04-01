@@ -21,6 +21,16 @@ This is a bukkit plugin that enables players to play the game called DeathSwap. 
 
 <b>Don't name your main world "dsgame-temporaryworld" it would get deleted the minute you load the plugin</b>
 
+<h3>Config:</h3>
+
+<h4>config.yml</h4>
+
+<ul>
+<li>gameWorld-name - This sets the name of your gameWorld (Just use something unique please)</li>
+<li>difficulty - This sets the default difficulty</li>
+<li>max-swap-time - This sets the default value of max-swap-time</li>
+<li>min-swap-time - This sets the deafult value of min-swap-time</li>
+</ul>
 
 
 
