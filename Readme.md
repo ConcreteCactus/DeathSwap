@@ -19,8 +19,6 @@ This is a bukkit plugin that enables players to play the game called DeathSwap. 
 <li>Put the jar file in the plugins folder of your bukkit server</li>
 </ol>
 
-<b>Don't name your main world "dsgame-temporaryworld" it would get deleted the minute you load the plugin</b>
-
 <h3>Config:</h3>
 
 <h4>config.yml</h4>
