@@ -30,6 +30,18 @@ This is a bukkit plugin that enables players to play the game called DeathSwap. 
 <li>min-swap-time - This sets the deafult value of min-swap-time</li>
 </ul>
 
+<h3>Supported minecraft versions:</h3>
+
+<ul>
+<li>1.15.2</li>
+<li>1.15.1</li>
+<li>1.15</li>
+<li>1.14.4</li>
+<li>1.14.3</li>
+<li>1.14.2</li>
+<li>1.14.1</li>
+<li>1.14</li>
+</ul>
 
 
 
