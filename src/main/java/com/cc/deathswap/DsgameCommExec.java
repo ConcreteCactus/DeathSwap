@@ -133,7 +133,7 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
                             case 2:
                                 return Arrays.asList("get", "set");
                             case 3:
-                                return Arrays.asList("difficulty", "min-swap-time", "max-swap-time");
+                                return Arrays.asList("difficulty", "min-swap-time", "max-swap-time", "all");
                             case 4:
                                 if(args[1].equals("set")){
                                     switch(args[2]){
@@ -240,7 +240,7 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
     }
 
     private void onSettings(CommandSender commandSender, String[] args) {
-        if(args[1].equals("get")){
+        if(args[1].equals("get")){              //get argument
             switch(args[2]){
                 case "min-swap-time":
                     sendMessage(commandSender, args[2] + " is " + dsgame.getMinTime() + " seconds.");
@@ -251,28 +251,33 @@ public class DsgameCommExec  implements CommandExecutor, TabCompleter {
                 case "difficulty":
                     sendMessage(commandSender, args[2] + " is " + dsgame.getDifficulty() + ".");
                     break;
+                default: // Prints all the variables
+                    sendMessage(commandSender, "min-swap-time" + " is " + dsgame.getMinTime() + " seconds.");
+                    sendMessage(commandSender, "max-swap-time" + " is " + dsgame.getMaxTime() + " seconds.");
+                    sendMessage(commandSender, "difficulty" + " is " + dsgame.getDifficulty() + ".");
             }
-        }else if(args[1].equals("set")){
+        }else if(args[1].equals("set")){        //set argument
             if(commandSender instanceof Player){
-                if(dsgame.isFirst((Player) commandSender)){
-                    switch(args[2]){
-                        case "min-swap-time":
-                            dsgame.setMinTime(Double.parseDouble(args[3]));
-                            if(dsgame.getMinTime() > dsgame.getMaxTime()){dsgame.setMaxTime(Double.parseDouble(args[3]));}
-                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getMinTime() + " seconds.");
-                            break;
-                        case "max-swap-time":
-                            dsgame.setMaxTime(Double.parseDouble(args[3]));
-                            if(dsgame.getMinTime() > dsgame.getMaxTime()){dsgame.setMinTime(Double.parseDouble(args[3]));}
-                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getMaxTime() + " seconds.");
-                            break;
-                        case "difficulty":
-                            dsgame.setDifficulty(args[3]);
-                            sendMessage(commandSender, args[2] + " has been set to " + dsgame.getDifficulty() + ".");
-                            break;
+                if(dsgame.lobby){
+                    if(dsgame.isFirst((Player) commandSender)){
+                        switch(args[2]){
+                            case "min-swap-time":
+                                try{dsgame.setMinTime(Double.parseDouble(args[3]));}catch(Exception e){sendMessage(commandSender, "That was not a number");} //This line sets the swaptimemin, if the value entered is nt a number, it returns an error to the player
+                                if(dsgame.getMinTime() > dsgame.getMaxTime()){dsgame.setMaxTime(Double.parseDouble(args[3]));}
+                                break;
+                            case "max-swap-time":
+                                try{dsgame.setMaxTime(Double.parseDouble(args[3]));}catch(Exception e){sendMessage(commandSender, "That was not a number");} //Similar to the one above
+                                if(dsgame.getMinTime() > dsgame.getMaxTime()){dsgame.setMinTime(Double.parseDouble(args[3]));}
+                                break;
+                            case "difficulty":
+                                dsgame.setDifficulty(args[3]);
+                                break;
+                        }
+                    }else{
+                        sendMessage(commandSender, "You are not the first player in the lobby, you can't use set.");
                     }
                 }else{
-                    sendMessage(commandSender, "You are not the first player in the lobby, you can't use set.");
+                    sendMessage(commandSender, "The game is already running, you can not set variables");
                 }
             }else{
                 sendMessage(commandSender, "Only a player can execute this command with set.");

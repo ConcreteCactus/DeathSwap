@@ -46,10 +46,12 @@ public class DSgame {
 
     public void setMaxTime(double mt){
         swaptimemax = mt;
+        broadcastToPlayers("max-swap-time has been set to " + mt + " seconds.");
     }
 
     public void setMinTime(double mt){
         swaptimemin = mt;
+        broadcastToPlayers("min-swap-time has been set to " + mt + " seconds.");
     }
 
     public boolean setDifficulty(@Nullable String diff){ //this function will check if the difficulty entered is valid and return true if it is.
@@ -69,6 +71,7 @@ public class DSgame {
             default:
                 return false;
         }
+        broadcastToPlayers("difficulty has been set to " + diff + ".");
         return true;
     }
 
@@ -149,7 +152,7 @@ public class DSgame {
     //This runs when a player executes /dsgame start
     public int startGame(Player p){
         if(players.size() < 2){
-            return -1;
+           // return -1;
         }
         if(!players.get(0).hasEqualUUID(p)){
             return -2;
@@ -167,7 +170,7 @@ public class DSgame {
         }
 
         if(players.size() < 2){
-            return -1;
+          //  return -1;
         }
 
         broadcastToPlayers("Generating minigame world. The DeathSwap game will start soon!");
@@ -175,7 +178,7 @@ public class DSgame {
 
         deleteTempWorld();
 
-        wc.copy(players.get(0).player.getWorld());
+        wc.copy(Bukkit.getServer().getWorlds().get(0));
         wc.seed(seedRandom.nextLong());
         gameWorld = wc.createWorld();
         gameWorld.setKeepSpawnInMemory(false);
@@ -207,7 +210,7 @@ public class DSgame {
 
         broadcastToPlayers("DeathSwap Game started. Good Luck");
         startSwapping();
-        checkGameState();
+        //checkGameState();
     }
 
     //This runs when a player dies in a deathswap game
