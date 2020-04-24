@@ -8,6 +8,13 @@
     <artifactId>Anarchy</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <repositories>
+        <!-- This adds the Spigot Maven repository to the build -->
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -26,7 +33,6 @@
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.15.2-R0.1-SNAPSHOT</version>
-            <type>jar</type>
             <scope>provided</scope>
         </dependency>
         <dependency>

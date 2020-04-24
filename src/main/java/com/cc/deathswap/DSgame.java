@@ -31,8 +31,7 @@ public class DSgame {
     World gameWorld;
     Random seedRandom;
 
-
-    public DSgame(DSMainPlugin plugin){
+    public DSgame(DSMainPlugin plugin) {
         jplugin = plugin;
         players = new ArrayList<DSplayer>();
         lobby = true;
@@ -40,22 +39,22 @@ public class DSgame {
         seedRandom = new Random(System.currentTimeMillis());
     }
 
-    public void resetSettings(){
+    public void resetSettings() {
         jplugin.loadConfig();
     }
 
-    public void setMaxTime(double mt){
+    public void setMaxTime(double mt) {
         swaptimemax = mt;
         broadcastToPlayers("max-swap-time has been set to " + mt + " seconds.");
     }
 
-    public void setMinTime(double mt){
+    public void setMinTime(double mt) {
         swaptimemin = mt;
         broadcastToPlayers("min-swap-time has been set to " + mt + " seconds.");
     }
 
-    public boolean setDifficulty(@Nullable String diff){ //this function will check if the difficulty entered is valid and return true if it is.
-        switch(diff){
+    public boolean setDifficulty(@Nullable String diff) { //this function will check if the difficulty entered is valid and return true if it is.
+        switch (diff) {
             case "easy":
                 difficulty = Difficulty.EASY;
                 break;
@@ -75,23 +74,25 @@ public class DSgame {
         return true;
     }
 
-    public boolean setWorldName(@Nullable String name){
-        if(name == null || name == ""){return false;}
+    public boolean setWorldName(@Nullable String name) {
+        if (name == null || name == "") {
+            return false;
+        }
         gameWorldName = name;
         wc = new WorldCreator(gameWorldName);
         return true;
     }
 
-    public double getMaxTime(){
+    public double getMaxTime() {
         return swaptimemax;
     }
 
-    public double getMinTime(){
+    public double getMinTime() {
         return swaptimemin;
     }
 
-    public String getDifficulty(){
-        switch(difficulty){
+    public String getDifficulty() {
+        switch (difficulty) {
             case EASY:
                 return "easy";
             case NORMAL:
@@ -106,41 +107,46 @@ public class DSgame {
     }
 
     //Returns true if the given player is the first int the players array.
-    public boolean isFirst(Player p){
+    public boolean isFirst(Player p) {
         return players.size() > 0 && players.get(0).hasEqualUUID(p);
     }
 
     //This runs when a player executes /dsgame join
-    public int addPlayer(Player p){
-        if(lobby){
-            for(DSplayer dsp : players){
-                if(dsp.hasEqualUUID(p)){return -1;}
+    public int addPlayer(Player p) {
+        if (lobby) {
+            for (DSplayer dsp : players) {
+                if (dsp.hasEqualUUID(p)) {
+                    return -1;
+                }
             }
 
             broadcastToPlayers(p.getDisplayName() + " has joined the lobby.");
             String lobbyplayers = ChatColor.YELLOW + "Already in lobby: ";
-            for(DSplayer dsp : players){
+            for (DSplayer dsp : players) {
                 lobbyplayers += dsp.player.getDisplayName() + ", ";
             }
-            if(players.size() > 0){
+            if (players.size() > 0) {
                 p.sendRawMessage(lobbyplayers);
             }
 
             players.add(new DSplayer(p.getUniqueId()));
-            players.get(players.size()-1).setPlugin(jplugin);
+            players.get(players.size() - 1).setPlugin(jplugin);
             return 0;
-        }else{
+        } else {
             return -2;
         }
     }
+
     //This runs when a player executes /dsgame leave
-    public int removePlayer(Player p){
-        if(lobby) {
+    public int removePlayer(Player p) {
+        if (lobby) {
             for (int i = 0; i < players.size(); i++) {
                 if (players.get(i).hasEqualUUID(p)) {
                     players.remove(i);
                     broadcastToPlayers(ChatColor.YELLOW + p.getDisplayName() + " has left the lobby.");
-                    if(players.size() >= 1 && i == 0){players.get(0).player.sendRawMessage(ChatColor.YELLOW + "Only you can start the game with '/dsgame start'");}
+                    if (players.size() >= 1 && i == 0) {
+                        players.get(0).player.sendRawMessage(ChatColor.YELLOW + "Only you can start the game with '/dsgame start'");
+                    }
                     return 0;
                 }
             }
@@ -150,26 +156,26 @@ public class DSgame {
     }
 
     //This runs when a player executes /dsgame start
-    public int startGame(Player p){
-        if(players.size() < 2){
+    public int startGame(Player p) {
+        if (players.size() < 2) {
             return -1;
         }
-        if(!players.get(0).hasEqualUUID(p)){
+        if (!players.get(0).hasEqualUUID(p)) {
             return -2;
         }
-        if(!lobby){
+        if (!lobby) {
             return -3;
         }
 
         lobby = false;
 
-        for(DSplayer dsp : players){
-            if(!dsp.setPlayer()){
+        for (DSplayer dsp : players) {
+            if (!dsp.setPlayer()) {
                 players.remove(dsp);
             }
         }
 
-        if(players.size() < 2){
+        if (players.size() < 2) {
             return -1;
         }
 
@@ -193,19 +199,19 @@ public class DSgame {
     //1. set some constant math values
     //2. seek the top block of the given 2d coordinates
     //3. start the swapper loop and teleport players
-    public void scatterPlayers(){
+    public void scatterPlayers() {
         doMaths(players.size());
 
-        for(int i = 0; i < players.size(); i++){
+        for (int i = 0; i < players.size(); i++) {
             Vector2d v = getStartingCoordinates(i);
-            gameWorld.loadChunk((int)Math.floor(v.x/16), (int)Math.floor(v.y/16), true);
+            gameWorld.loadChunk((int) Math.floor(v.x / 16), (int) Math.floor(v.y / 16), true);
             int y = 255;
-            while(gameWorld.getBlockAt((int)Math.floor(v.x), y--, (int)Math.floor(v.y)).getType() == Material.AIR);
+            while (gameWorld.getBlockAt((int) Math.floor(v.x), y--, (int) Math.floor(v.y)).getType() == Material.AIR) ;
             y++;
 
             players.get(i).start(new Location(gameWorld, Math.floor(v.x), y, Math.floor(v.y)));
 
-            gameWorld.unloadChunk((int)Math.floor(v.x/16), (int)Math.floor(v.y/16), true);
+            gameWorld.unloadChunk((int) Math.floor(v.x / 16), (int) Math.floor(v.y / 16), true);
         }
 
         broadcastToPlayers("DeathSwap Game started. Good Luck");
@@ -214,9 +220,9 @@ public class DSgame {
     }
 
     //This runs when a player dies in a deathswap game
-    public boolean playerDeath(Player p){
-        for(DSplayer dsp : players){
-            if(dsp.hasEqualUUID(p)){
+    public boolean playerDeath(Player p) {
+        for (DSplayer dsp : players) {
+            if (dsp.hasEqualUUID(p)) {
                 dsp.die();
                 broadcastToPlayers(dsp.player.getDisplayName() + " has died.");
                 checkGameState();
@@ -227,9 +233,9 @@ public class DSgame {
     }
 
     //returns true if the player is playing and is still alive
-    public boolean isPlaying(Player p){
-        for(DSplayer dsp : players){
-            if(dsp.hasEqualUUID(p) || dsp.state == DSplayer.DsPlayerState.Alive){
+    public boolean isPlaying(Player p) {
+        for (DSplayer dsp : players) {
+            if (dsp.hasEqualUUID(p) || dsp.state == DSplayer.DsPlayerState.Alive) {
                 return true;
             }
         }
@@ -237,34 +243,36 @@ public class DSgame {
     }
 
     //This runs when a player executes /dsgame stop
-    public int playerForfeit(Player p){
-        if(!lobby){
-           for(int i = 0; i < players.size(); i++){
-               if(players.get(i).hasEqualUUID(p) && players.get(i).state != DSplayer.DsPlayerState.Left){
-                   players.get(i).leave();
-                   checkGameState();
-                   return 0;
-               }
-           }
-           return -2;
+    public int playerForfeit(Player p) {
+        if (!lobby) {
+            for (int i = 0; i < players.size(); i++) {
+                if (players.get(i).hasEqualUUID(p) && players.get(i).state != DSplayer.DsPlayerState.Left) {
+                    players.get(i).leave();
+                    checkGameState();
+                    return 0;
+                }
+            }
+            return -2;
         }
         return -1;
     }
 
     //checks whether there is only one player alive, if so, it ends the game
-    public void checkGameState(){
+    public void checkGameState() {
         int aliveCount = 0;
-        for(DSplayer dsp : players){
-            if(dsp.state == DSplayer.DsPlayerState.Alive){aliveCount++;}
+        for (DSplayer dsp : players) {
+            if (dsp.state == DSplayer.DsPlayerState.Alive) {
+                aliveCount++;
+            }
         }
-        if(aliveCount <= 1){
+        if (aliveCount <= 1) {
             DSplayer winner = null;
-            for(DSplayer dsp : players){
-                if(dsp.state == DSplayer.DsPlayerState.Alive){
+            for (DSplayer dsp : players) {
+                if (dsp.state == DSplayer.DsPlayerState.Alive) {
                     winner = dsp;
                 }
             }
-            if(winner == null){
+            if (winner == null) {
                 broadcastToPlayers("A problem has occurred, aborting game.");
                 endGame(false);
                 return;
@@ -272,82 +280,89 @@ public class DSgame {
             broadcastToPlayers(winner.player.getDisplayName() + " won the DeathSwap game. Score: " + winner.score);
             endGame(false);
             broadcastToPlayers("Scores are:");
-            for(DSplayer dsp : players){
+            for (DSplayer dsp : players) {
                 broadcastToPlayers(dsp.player.getDisplayName() + " : " + dsp.score);
             }
 
         }
     }
 
-    public int getPlayerCount(){
+    public int getPlayerCount() {
         return players.size();
     }
 
-    public void broadcastToPlayers(String message){
-        for(DSplayer dsp : players){
-            if(dsp.player == null && !dsp.setPlayer()){
-                    continue;
+    public void broadcastToPlayers(ChatColor color, String message) {
+        for (DSplayer dsp : players) {
+            if (dsp.player == null && !dsp.setPlayer()) {
+                continue;
             }
-            dsp.player.sendRawMessage(ChatColor.YELLOW + message);
+            dsp.player.sendRawMessage(color + message);
         }
     }
+
+    public void broadcastToPlayers(String message) {
+        broadcastToPlayers(ChatColor.YELLOW, message);
+    }
+
     // This ends the game
     // fast = true; -> will use DSplayer.leave() instead of DSplayer.leaveNextTick(). Shouldn't generally be used
     // fast = false -> will use DSplayer.leaveNextTick()
-    public void endGame(boolean fast){
+    public void endGame(boolean fast) {
         stopSwapping();
 
-        if(!lobby){
+        if (!lobby) {
             lobby = true;
-            for(DSplayer dsp : players){
-                if(fast){
+            for (DSplayer dsp : players) {
+                if (fast) {
                     dsp.leave();
-                }else{
+                } else {
                     dsp.leaveNextTick();
                 }
             }
             players = new ArrayList<DSplayer>();
             Bukkit.getServer().unloadWorld(gameWorld, false);
-        }else{
+        } else {
             broadcastToPlayers("Everyone was kicked out of the lobby");
             players = new ArrayList<DSplayer>();
         }
     }
 
     //This starts the swapper - the class that handles the swapping
-    protected void startSwapping(){
+    protected void startSwapping() {
         swapping = true;
-        Bukkit.getServer().getScheduler().runTaskLater(jplugin, new Swapper(this), (long)getRandSwapTime() * 20);
+        long time = getRandSwapTime();
+        Bukkit.getServer().getScheduler().runTaskLater(jplugin, new CountDownTimer(this), time - 10 * 20);
+        Bukkit.getServer().getScheduler().runTaskLater(jplugin, new Swapper(this), time);
     }
 
-    protected void stopSwapping(){
+    protected void stopSwapping() {
         swapping = false;
     }
 
     //Returns a random value between swaptimemax and swaptimemin
-    public double getRandSwapTime(){
-        double time = (Math.random() * (swaptimemax - swaptimemin)) + swaptimemin;
-        return time;
+    public long getRandSwapTime() {
+        return (long) getMaxTime() * 20;
     }
 
     //This sets some values with which the random position of the players will be calculated
     private Vector2d sco;
     private double alpha, range;
-    private void doMaths(int numOfPlayers){
 
-        sco = new Vector2d((float)Math.random() * odist, (float)Math.random() * odist);
+    private void doMaths(int numOfPlayers) {
+
+        sco = new Vector2d((float) Math.random() * odist, (float) Math.random() * odist);
         range = numOfPlayers * odist;
 
-        if(numOfPlayers <= 1){
+        if (numOfPlayers <= 1) {
             alpha = Math.PI / 2;
-        }else{
+        } else {
             alpha = 2 * Math.PI / numOfPlayers;
         }
 
     }
 
     //Returns the starting position of a player for the given index
-    private Vector2d getStartingCoordinates(int index){
+    private Vector2d getStartingCoordinates(int index) {
         return new Vector2d(Math.cos(index * alpha) * range + sco.x, Math.sin(index * alpha) * range + sco.y);
     }
 
@@ -356,43 +371,60 @@ public class DSgame {
     public void swap() {
         Location prevLoc;
         int i = 0;
-        while(players.get(i).state != DSplayer.DsPlayerState.Alive){
+        while (players.get(i).state != DSplayer.DsPlayerState.Alive) {
             i++;
         }
         prevLoc = players.get(i).player.getLocation();
-        for(; i < players.size()-1; i++){
-            int f = i+1;
-            while(players.get(f).state != DSplayer.DsPlayerState.Alive && f < players.size()){
+        for (; i < players.size() - 1; i++) {
+            int f = i + 1;
+            while (players.get(f).state != DSplayer.DsPlayerState.Alive && f < players.size()) {
                 f++;
             }
-            if(f >= players.size()){
+            if (f >= players.size()) {
                 break;
             }
             players.get(i).teleport(players.get(f).player.getLocation());
             players.get(i).score++;
-            i = f-1;
+            i = f - 1;
         }
         players.get(i).teleport(prevLoc);
     }
 
     //A function to delete the temporary gameworld
-    public void deleteTempWorld(){
+    public void deleteTempWorld() {
         File wcont = Bukkit.getServer().getWorldContainer();
-        for(File f : wcont.listFiles()){
-            if(f.getName().equals(gameWorldName)){
+        for (File f : wcont.listFiles()) {
+            if (f.getName().equals(gameWorldName)) {
                 deleteFolder(f);
             }
         }
     }
 
     //This function deletes a folder recursively
-    private void deleteFolder(File folder){
-        if(folder.isDirectory()){
-            for(File f : folder.listFiles()){
+    private void deleteFolder(File folder) {
+        if (folder.isDirectory()) {
+            for (File f : folder.listFiles()) {
                 deleteFolder(f);
             }
         }
         folder.delete();
+    }
+
+    public static class CountDownTimer implements Runnable {
+
+        public DSgame game;
+
+        public CountDownTimer(DSgame game) {
+            this.game = game;
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                final int finali = i;
+                Bukkit.getServer().getScheduler().runTaskLater(game.jplugin, () -> game.broadcastToPlayers(ChatColor.RED, "Swapping In " + (10 - finali) + " Seconds"), i * 20);
+            }
+        }
     }
 }
 
